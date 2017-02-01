@@ -1,1 +1,1 @@
-# scoala-informala-homeworks
+Tamas-Norbert Miklos
