@@ -10,7 +10,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Represents the core of the SkiBiathlonStandings application,
+ * it is responsible for reading the input file, for parsing the values
+ * from the input file, for creating athletes instances and
+ * for printing out the first three athletes based on their final time.
  * Created by Tomekk on 2/5/2017.
  */
 public class BiathlonStandings {
@@ -76,32 +79,41 @@ public class BiathlonStandings {
     /**
      * Evaluates the result of a biathlon event stored in a file and
      * prints out the first three athletes having the best result.
+     * It also returns an integer value, permitting unit testing on itself.
      * @param fileName The name of a file located in this applications base
      *                 directory containing results from a ski biathlon event.
+     * @return  -1 if a {@code FileNotFoundException} was thrown,
+     *          -2 if an {@code IllegalArgumentException was thrown
+     *          -3 if an {@code IOException} was thrown and
+     *           0 if the methods execution was successful.
      * @throws FileNotFoundException if the passed is file is not found.
      * @throws IOException if an error occurs in the reading process.
      */
-    public void evaluateResults(String fileName){
+    public int evaluateResults(String fileName){
         String line;
         int i = 1; // it's used for tracking the lines in the input file
         try(BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             while((line = br.readLine()) != null) {
-                addAthlete(line);
+                Athlete currentAthlete = parseValues(line);
+                athletes.add(currentAthlete);
                 i++;
             }
         } catch (FileNotFoundException e) {
             logger.log(Level.SEVERE,"The specified file was not found.");
+            return -1;
         } catch (IllegalArgumentException e) {
             logger.log(Level.SEVERE, "In line " + i + ": " + e.getMessage());
-            return;
+            return -2;
         } catch (IOException e) {
             logger.log(Level.SEVERE, "An error occurred in the reading process.");
+            return -3;
         }
         logger.log(Level.INFO, "Results from " + fileName + " were successfully processed.");
         Collections.sort(athletes);
         logger.log(Level.INFO, "Winner - " + athletes.get(0).toString());
         logger.log(Level.INFO, "Runner-up - " + athletes.get(1).toString());
         logger.log(Level.INFO, "Third place - " + athletes.get(2).toString());
+        return  0;
     }
 
     /**
@@ -130,10 +142,4 @@ public class BiathlonStandings {
 
         return new Athlete(athleteNumber,athleteName,countryCode,time,shootings);
     }
-
-    private boolean addAthlete(String input) {
-        Athlete athlete = parseValues(input);
-        return athletes.add(athlete);
-    }
-
 }

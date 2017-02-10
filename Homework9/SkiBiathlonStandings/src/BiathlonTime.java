@@ -8,7 +8,7 @@ import java.util.Locale;
  * Created by Tomekk on 2/5/2017.
  */
 public class BiathlonTime implements Comparable<BiathlonTime>{
-    //locale and numberFormat objects will be used for formatting when printing out BiathlonTimes
+    //locale and numberFormat objects will be used for formatting at printing
     private static Locale locale = new Locale("minutes/seconds");
     private static NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 

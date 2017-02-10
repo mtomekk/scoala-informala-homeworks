@@ -117,5 +117,22 @@ public class BiathlonStandingsTest {
         Assert.assertEquals(10,athlete.getFinalTime().getSeconds());
     }
 
+    @Test
+    public void fileDoesNotExists() {
+        BiathlonStandings bs = new BiathlonStandings();
+        Assert.assertEquals(-1,bs.evaluateResults("noSuchFile.csv"));
+    }
+
+    @Test
+    public void fileWithIllegalArguments() {
+        BiathlonStandings bs = new BiathlonStandings();
+        Assert.assertEquals(-2,bs.evaluateResults("InvalidArguments.csv"));
+    }
+
+    @Test
+    public void legalFile() {
+        BiathlonStandings bs = new BiathlonStandings();
+        Assert.assertEquals(0,bs.evaluateResults("Results.csv"));
+    }
 
 }
