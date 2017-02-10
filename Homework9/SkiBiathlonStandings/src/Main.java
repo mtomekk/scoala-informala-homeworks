@@ -5,8 +5,8 @@
 public class Main {
 
     /**
-     * Entry for the application/
-     * @param args
+     * Entry point for the application.
+     * @param args This application is not using any arguments.
      */
     public static void main(String[] args) {
 
