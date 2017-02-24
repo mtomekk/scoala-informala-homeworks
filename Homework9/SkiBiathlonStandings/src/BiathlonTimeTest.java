@@ -61,11 +61,11 @@ public class BiathlonTimeTest {
     }
 
     @Test
-    public void addMoreThan_60_Seconds() {
+    public void addMoreThanSixtySeconds() {
         BiathlonTime time = new BiathlonTime(20,15);
-        BiathlonTime resultTime = time.add(60);
+        BiathlonTime resultTime = time.add(70);
         Assert.assertEquals(21,resultTime.getMinutes());
-        Assert.assertEquals(15,resultTime.getSeconds());
+        Assert.assertEquals(25,resultTime.getSeconds());
     }
 
     @Test(expected = IllegalArgumentException.class)

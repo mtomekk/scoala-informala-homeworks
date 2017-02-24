@@ -1,3 +1,4 @@
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,13 +31,8 @@ public class Athlete implements Comparable<Athlete>{
         this.countryCode = countryCode;
         this.initialTime = time;
         this.shootings = shootings;
-        this.missedShots = 0;
-        for(String shot:shootings) {
-            if("o".equalsIgnoreCase(shot)) {
-                missedShots++;
-            }
-        }
-        this.finalTime = initialTime.add(missedShots * 10);
+        this.missedShots = Collections.frequency(shootings, "o");
+        this.finalTime = getFinalTime(shootings);
     }
 
     public int getAthleteNumber() {
@@ -73,6 +69,11 @@ public class Athlete implements Comparable<Athlete>{
                 " " + finalTime  +
                 "(" + initialTime + " + " +
                 missedShots * 10 + ")";
+    }
+
+    private BiathlonTime getFinalTime(List<String> shootings) {
+        int missedShots = Collections.frequency(shootings, "o");
+        return initialTime.add(missedShots * 10);
     }
 
     /**

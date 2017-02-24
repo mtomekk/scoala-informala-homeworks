@@ -32,12 +32,12 @@ public class BiathlonStandings {
      *          converted to a legal athlete number.
      * @return An integer value representing the athletes number.
      */
-    private int athleteNumberCheck(String input) {
+    private int parseAthleteNumber(String input) {
         int athleteNumber;
         try {
             athleteNumber = Integer.parseInt(input);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid value for athlete number.");
+            throw new IllegalArgumentException("Invalid value for athlete number");
         }
         if(athleteNumber <= 0) {
             throw new IllegalArgumentException("Invalid value for athlete number.");
@@ -45,21 +45,21 @@ public class BiathlonStandings {
         return athleteNumber;
     }
 
-    private String athleteNameCheck(String input) {
-        if(input.split(" ").length != 2) {
+    private String parseAthleteName(String input) {
+        if(input.split(" ").length < 2) {
             throw new IllegalArgumentException("Must contain first and last name.");
         }
         return input;
     }
 
-    private String countryCodeCheck(String input) {
+    private String parseCountryCode(String input) {
         if(input.length() > 3) {
             throw new IllegalArgumentException("The maximum number of characters for country code is 3");
         }
         return input.toUpperCase();
     }
 
-    private List<String> shootingCheck(String[] shootings) {
+    private List<String> parseShootings(String[] shootings) {
         List<String> results = new ArrayList<>();
         for(String round:shootings) {
             if(round.length() != 5) {
@@ -89,31 +89,42 @@ public class BiathlonStandings {
      * @throws FileNotFoundException if the passed is file is not found.
      * @throws IOException if an error occurs in the reading process.
      */
-    public int evaluateResults(String fileName){
-        String line;
-        int i = 1; // it's used for tracking the lines in the input file
+    public void evaluateResults(String fileName){
+        List<String> inputLines = new ArrayList<>();
+        int i = 0; // it's used for tracking the lines in the input file
         try(BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            while((line = br.readLine()) != null) {
-                Athlete currentAthlete = parseValues(line);
-                athletes.add(currentAthlete);
-                i++;
+            for(String line = br.readLine(); line != null; line = br.readLine()) {
+                inputLines.add(line);
             }
         } catch (FileNotFoundException e) {
             logger.log(Level.SEVERE,"The specified file was not found.");
-            return -1;
-        } catch (IllegalArgumentException e) {
-            logger.log(Level.SEVERE, "In line " + i + ": " + e.getMessage());
-            return -2;
+//            return -1;
         } catch (IOException e) {
             logger.log(Level.SEVERE, "An error occurred in the reading process.");
-            return -3;
+//            return -3;
         }
+        for(String line:inputLines) {
+           try {
+               i++;
+               Athlete currentAthlete = parseValues(line);
+               athletes.add(currentAthlete);//
+           } catch (IllegalArgumentException e) {
+               logger.log(Level.SEVERE,e.getMessage() + " on line " + i);
+//               continue;
+           }
+        }
+
         logger.log(Level.INFO, "Results from " + fileName + " were successfully processed.");
         Collections.sort(athletes);
-        logger.log(Level.INFO, "Winner - " + athletes.get(0).toString());
-        logger.log(Level.INFO, "Runner-up - " + athletes.get(1).toString());
-        logger.log(Level.INFO, "Third place - " + athletes.get(2).toString());
-        return  0;
+        try {
+            logger.log(Level.INFO, "Winner - " + athletes.get(0).toString());
+            logger.log(Level.INFO, "Runner-up - " + athletes.get(1).toString());
+            logger.log(Level.INFO, "Third place - " + athletes.get(2).toString());
+        } catch (IndexOutOfBoundsException e) {
+            // if there are less than 3 athletes this can happen
+        }
+
+//        return  0;
     }
 
     /**
@@ -131,14 +142,14 @@ public class BiathlonStandings {
             throw new IllegalArgumentException("Input cannot be null");
         }
         if(elements.length != 7) {
-            throw new IllegalArgumentException("Missing element, or too many elements.");
+            throw new IllegalArgumentException("Missing element, or too many elements");
         }
 
-        int athleteNumber = athleteNumberCheck(elements[0]);
-        String athleteName = athleteNameCheck(elements[1]);
-        String countryCode = countryCodeCheck(elements[2]);
+        int athleteNumber = parseAthleteNumber(elements[0]);
+        String athleteName = parseAthleteName(elements[1]);
+        String countryCode = parseCountryCode(elements[2]);
         BiathlonTime time = BiathlonTime.parse(elements[3]);
-        List<String> shootings = shootingCheck(Arrays.copyOfRange(elements,4,elements.length));
+        List<String> shootings = parseShootings(Arrays.copyOfRange(elements,4,elements.length));
 
         return new Athlete(athleteNumber,athleteName,countryCode,time,shootings);
     }
