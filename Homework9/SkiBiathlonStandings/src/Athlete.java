@@ -11,7 +11,7 @@ public class Athlete implements Comparable<Athlete>{
     private String countryCode;
     private BiathlonTime initialTime;
     private BiathlonTime finalTime;
-    private List<String> shootings;
+    private List<Character> shootings;
     private int missedShots;
 
     /**
@@ -25,14 +25,13 @@ public class Athlete implements Comparable<Athlete>{
      * @param time BiathlonTime object representing an athletes time in a biathlon event.
      * @param shootings A list of Strings representing an athletes result in the shooting range.
      */
-    public Athlete(int athleteNumber, String athleteName, String countryCode, BiathlonTime time, List<String> shootings) {
+    public Athlete(int athleteNumber, String athleteName, String countryCode, BiathlonTime time, List<Character> shootings) {
         this.athleteNumber = athleteNumber;
         this.athleteName = athleteName;
         this.countryCode = countryCode;
         this.initialTime = time;
         this.shootings = shootings;
-        this.missedShots = Collections.frequency(shootings, "o");
-        this.finalTime = getFinalTime(shootings);
+        this.missedShots = Collections.frequency(shootings, 'o');
     }
 
     public int getAthleteNumber() {
@@ -55,12 +54,12 @@ public class Athlete implements Comparable<Athlete>{
         return finalTime;
     }
 
-    public int getMissedShots() {
-        return missedShots;
+    public List<Character> getShootings() {
+        return shootings;
     }
 
-    private List<String> getShootings() {
-        return shootings;
+    public int getMissedShots() {
+        return missedShots;
     }
 
     @Override
@@ -71,9 +70,8 @@ public class Athlete implements Comparable<Athlete>{
                 missedShots * 10 + ")";
     }
 
-    private BiathlonTime getFinalTime(List<String> shootings) {
-        int missedShots = Collections.frequency(shootings, "o");
-        return initialTime.add(missedShots * 10);
+    public void setFinalTime(BiathlonTime finalTime) {
+        this.finalTime = finalTime;
     }
 
     /**

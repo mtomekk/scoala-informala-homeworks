@@ -113,26 +113,9 @@ public class BiathlonStandingsTest {
     public void calculateFinalTime() {
         BiathlonStandings bs = new BiathlonStandings();
         Athlete athlete = bs.parseValues("51,George Cook,UK,30:20,xxxxx,xxxxx,ooooo");
+        bs.calculateAthletesFinalTime(athlete);
         Assert.assertEquals(31,athlete.getFinalTime().getMinutes());
         Assert.assertEquals(10,athlete.getFinalTime().getSeconds());
     }
-
-//    @Test
-//    public void fileDoesNotExists() {
-//        BiathlonStandings bs = new BiathlonStandings();
-//        Assert.assertEquals(-1,bs.evaluateResults("noSuchFile.csv"));
-//    }
-//
-//    @Test
-//    public void fileWithIllegalArguments() {
-//        BiathlonStandings bs = new BiathlonStandings();
-//        Assert.assertEquals(-2,bs.evaluateResults("InvalidArguments.csv"));
-//    }
-//
-//    @Test
-//    public void legalFile() {
-//        BiathlonStandings bs = new BiathlonStandings();
-//        Assert.assertEquals(0,bs.evaluateResults("Results.csv"));
-//    }
 
 }

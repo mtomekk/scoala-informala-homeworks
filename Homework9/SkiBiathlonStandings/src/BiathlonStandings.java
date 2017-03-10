@@ -59,14 +59,14 @@ public class BiathlonStandings {
         return input.toUpperCase();
     }
 
-    private List<String> parseShootings(String[] shootings) {
-        List<String> results = new ArrayList<>();
+    private List<Character> parseShootings(String[] shootings) {
+        List<Character> results = new ArrayList<>();
         for(String round:shootings) {
             if(round.length() != 5) {
                 throw new IllegalArgumentException("Too many or too less shots in of the rounds");
             }
-            for(String result:round.split("")) {
-                if("x".equalsIgnoreCase(result) || "o".equalsIgnoreCase(result)) {
+            for(Character result : round.toCharArray()) {
+                if('x' == result || 'o' == result || 'X' == result || 'O' == result) {
                     results.add(result);
                 } else {
                     throw new IllegalArgumentException("Illegal value for shooting result");
@@ -76,16 +76,18 @@ public class BiathlonStandings {
         return results;
     }
 
+    public void calculateAthletesFinalTime(Athlete athlete) {
+        int missedShots = athlete.getMissedShots();
+        BiathlonTime finalTime = athlete.getInitialTime().add(missedShots * 10);
+        athlete.setFinalTime(finalTime);
+    }
+
     /**
      * Evaluates the result of a biathlon event stored in a file and
      * prints out the first three athletes having the best result.
      * It also returns an integer value, permitting unit testing on itself.
      * @param fileName The name of a file located in this applications base
      *                 directory containing results from a ski biathlon event.
-     * @return  -1 if a {@code FileNotFoundException} was thrown,
-     *          -2 if an {@code IllegalArgumentException was thrown
-     *          -3 if an {@code IOException} was thrown and
-     *           0 if the methods execution was successful.
      * @throws FileNotFoundException if the passed is file is not found.
      * @throws IOException if an error occurs in the reading process.
      */
@@ -98,19 +100,17 @@ public class BiathlonStandings {
             }
         } catch (FileNotFoundException e) {
             logger.log(Level.SEVERE,"The specified file was not found.");
-//            return -1;
         } catch (IOException e) {
             logger.log(Level.SEVERE, "An error occurred in the reading process.");
-//            return -3;
         }
         for(String line:inputLines) {
            try {
                i++;
                Athlete currentAthlete = parseValues(line);
-               athletes.add(currentAthlete);//
+               calculateAthletesFinalTime(currentAthlete);
+               athletes.add(currentAthlete);
            } catch (IllegalArgumentException e) {
                logger.log(Level.SEVERE,e.getMessage() + " on line " + i);
-//               continue;
            }
         }
 
@@ -123,8 +123,6 @@ public class BiathlonStandings {
         } catch (IndexOutOfBoundsException e) {
             // if there are less than 3 athletes this can happen
         }
-
-//        return  0;
     }
 
     /**
@@ -149,7 +147,7 @@ public class BiathlonStandings {
         String athleteName = parseAthleteName(elements[1]);
         String countryCode = parseCountryCode(elements[2]);
         BiathlonTime time = BiathlonTime.parse(elements[3]);
-        List<String> shootings = parseShootings(Arrays.copyOfRange(elements,4,elements.length));
+        List<Character> shootings = parseShootings(Arrays.copyOfRange(elements,4,elements.length));
 
         return new Athlete(athleteNumber,athleteName,countryCode,time,shootings);
     }
