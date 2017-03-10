@@ -73,7 +73,7 @@ public class Athlete implements Comparable<Athlete>{
     public void setFinalTime(BiathlonTime finalTime) {
         this.finalTime = finalTime;
     }
-
+ 
     /**
      * Compares athletes based on their final time.
      * @param other This athletes final time will be compared to its final time.
